@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Yayasan Syech Subakir | Peduli Yatim & Dhuafa</title>
+    <meta name="description" content="Yayasan Syech Subakir hadir untuk santunan yatim, pendidikan, dan pemberdayaan sosial.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-dark: #0B6B3A;
+            --primary-light: #6EDC8C;
+            --primary-soft: #A8E6B5;
+            --bg-light: #F9FCF7;
+            --bg-white: #FFFFFF;
+            --text-dark: #1C2E24;
+            --text-soft: #3A5543;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05);
+            --shadow-md: 0 20px 30px -10px rgba(11,107,58,0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* DEFAULT WHITE MODE */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* DARK MODE - HANYA AKTIF JIKA CLASS dark DITAMBAHKAN */
+        body.dark {
+            --bg-light: #121C16;
+            --bg-white: #1E2A24;
+            --text-dark: #E2F0E5;
+            --text-soft: #B8D5C2;
+            --glass-bg: rgba(30, 42, 36, 0.8);
+        }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        #page-loader {
+            position: fixed; inset: 0; background: var(--primary-dark); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loader-hidden { opacity: 0; visibility: hidden; }
+        .spinner {
+            width: 60px; height: 60px; border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Navbar */
+        .navbar {
+            position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(18px);
+            background: var(--glass-bg); border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 0; box-shadow: var(--shadow-sm);
+        }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        
+        /* LOGO NAVBAR - ICON MASJID */
+        .nav-logo {
+            width: 50px; height: 50px; background: linear-gradient(145deg, var(--primary-dark), var(--primary-light));
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 26px; border: 2px solid white; box-shadow: var(--shadow-sm);
+        }
+        .logo-text {
+            font-weight: 800; font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--primary-dark), #2D9C5A);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        
+        .nav-menu { display: flex; gap: 24px; font-weight: 600; }
+        .nav-menu a { text-decoration: none; color: var(--text-dark); }
+        .nav-menu a:hover { color: var(--primary-dark); }
+        .nav-actions { display: flex; align-items: center; gap: 16px; }
+        .btn-donate {
+            background: linear-gradient(145deg, var(--primary-dark), #15804a); color: white;
+            padding: 12px 24px; border-radius: 60px; font-weight: 700; border: none; cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-outline {
+            background: transparent; border: 1.5px solid var(--primary-dark); color: var(--primary-dark);
+            padding: 12px 24px; border-radius: 60px; font-weight: 600; cursor: pointer;
+        }
+        .btn-outline:hover { background: var(--primary-dark); color: white; }
+        .mobile-menu-btn { display: none; background: var(--bg-white); border: 1px solid #ccc; border-radius: 12px; padding: 10px 16px; cursor: pointer; }
+
+        /* TOGGLE DARK MODE - UIVERSE.IO (Madflows) */
+        .toggle-switch {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            --light: #d8dbe0;
+            --dark: #28292c;
+        }
+        .switch-label {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            background-color: var(--dark);
+            border-radius: 25px;
+            cursor: pointer;
+            border: 3px solid var(--dark);
+        }
+        .checkbox {
+            position: absolute;
+            display: none;
+        }
+        .slider {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+        .checkbox:checked ~ .slider {
+            background-color: var(--light);
+        }
+        .slider::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            box-shadow: inset 12px -4px 0px 0px var(--light);
+            background-color: var(--dark);
+            transition: 0.3s;
+        }
+        .checkbox:checked ~ .slider::before {
+            transform: translateX(50px);
+            background-color: var(--dark);
+            box-shadow: none;
+        }
+
+        /* Hero */
+        .hero { padding: 70px 0; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        
+        /* LOGO DI ATAS #TebarKebaikan */
+        .hero-logo-top {
+            margin-bottom: 15px;
+        }
+        .hero-logo-top img {
+            max-width: 160px;
+            height: auto;
+            border-radius: 16px;
+            display: block;
+        }
+        .hero-badge {
+            background: var(--primary-soft); color: var(--primary-dark);
+            padding: 6px 18px; border-radius: 40px; font-weight: 600;
+            display: inline-block; margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 3rem; font-weight: 800; line-height: 1.2;
+            background: linear-gradient(to right, var(--primary-dark), #218d52);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .hero-sub { font-size: 1.2rem; color: var(--text-soft); margin: 20px 0 30px; }
+        .btn-group { display: flex; gap: 16px; }
+
+        section { padding: 80px 0; }
+        .section-title { font-size: 2.3rem; font-weight: 700; margin-bottom: 30px; color: var(--primary-dark); border-left: 6px solid var(--primary-light); padding-left: 20px; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(8px); border-radius: 28px; padding: 30px; box-shadow: var(--shadow-md); }
+        .timeline-item { display: flex; gap: 20px; margin: 20px 0; padding: 16px; border-left: 4px solid var(--primary-light); }
+        .visi-misi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .card-visi { background: var(--bg-white); border-radius: 24px; padding: 28px; }
+        .program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .program-card { background: var(--bg-white); border-radius: 24px; padding: 28px; }
+        .progress-bar { height: 10px; background: #e0e9e2; border-radius: 20px; margin: 16px 0; }
+        .progress-fill { height: 10px; border-radius: 20px; background: linear-gradient(90deg, var(--primary-dark), var(--primary-light)); }
+        .struktur-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .person-card { background: var(--bg-white); padding: 20px; border-radius: 20px; text-align: center; }
+        .avatar-placeholder { width: 70px; height: 70px; background: linear-gradient(145deg, #6EDC8C, #0B6B3A); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; }
+
+        /* Donasi */
+        .donation-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .payment-card { background: var(--bg-white); border-radius: 28px; padding: 28px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 14px; border-radius: 40px; border: 1px solid #ccc;
+            background: var(--bg-white); color: var(--text-dark); font-size: 1rem;
+        }
+        .form-group input.error { border-color: #e74c3c; background: #fff5f5; }
+        .error-message { color: #e74c3c; font-size: 0.85rem; margin-top: 5px; display: none; }
+        .amount-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .amount-btn {
+            background: var(--bg-light); border: 1px solid var(--primary-soft);
+            padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer;
+        }
+        .amount-btn.active { background: var(--primary-dark); color: white; }
+        .rek-display {
+            background: #F2F8F4; padding: 14px 18px; border-radius: 20px; font-family: monospace;
+            font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center;
+            margin: 10px 0; flex-wrap: wrap; gap: 10px;
+        }
+        .copy-btn { background: white; border: 1px solid #ccc; border-radius: 30px; padding: 6px 16px; cursor: pointer; }
+        .qris-area { background: #F4FAF6; border-radius: 24px; padding: 24px; text-align: center; }
+        .qris-img { margin-top: 16px; }
+        .qris-img img { max-width: 200px; border-radius: 16px; }
+        .btn-wa {
+            background: #25D366; color: white; padding: 14px; border-radius: 60px;
+            font-weight: 700; display: flex; align-items: center; justify-content: center;
+            gap: 10px; text-decoration: none; width: 100%; margin-top: 20px;
+        }
+
+        footer { background: var(--primary-dark); color: #E2F0E5; padding: 50px 0 20px; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; }
+
+        #paymentMethodsBox { display: none; margin-top: 24px; }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .visi-misi-grid { grid-template-columns: 1fr; }
+            .program-grid { grid-template-columns: 1fr; }
+            .struktur-grid { grid-template-columns: repeat(2, 1fr); }
+            .donation-wrapper { grid-template-columns: 1fr; }
+            .hero-logo-top img { max-width: 130px; }
+            .hero h1 { font-size: 2.3rem; }
+        }
+        @media (max-width: 480px) {
+            .struktur-grid { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="page-loader"><div class="spinner"></div></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="container nav-container">
+        <div class="logo-area">
+            <!-- LOGO NAVBAR - ICON MASJID -->
+            <div class="nav-logo">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <span class="logo-text">SyechSubakir</span>
+        </div>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        
+        <div class="nav-menu" id="navMenu">
+            <a href="#beranda">Beranda</a>
+            <a href="#tentang">Tentang</a>
+            <a href="#program">Program</a>
+            <a href="#struktur">Struktur</a>
+            <a href="#donasi">Donasi</a>
+            <a href="#kontak">Kontak</a>
+        </div>
+        
+        <div class="nav-actions">
+            <!-- TOGGLE DARK MODE - UIVERSE.IO (Madflows) -->
+            <div class="toggle-switch">
+                <label class="switch-label">
+                    <input type="checkbox" class="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="btn-donate" onclick="document.getElementById('donasi').scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-heart"></i> Donasi
+            </button>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <!-- Hero Section -->
+    <section id="beranda" class="hero">
+        <div class="container hero-grid">
+            <div>
+                <!-- LOGO DI ATAS #TebarKebaikan - GANTI LINK DI SINI -->
+                <div class="hero-logo-top">
+                    <img src="d:\a YAYASAN\WEBSITE\LOGO-YSS.PNG.png" alt="Logo Yayasan Syech Subakir"> 
+                </div>
+                
+                <span class="hero-badge"><i class="fas fa-hand-holding-heart"></i> #TebarKebaikan</span>
+                
+                <h1>Satu Hati<br>Sejuta Peduli</h1>
+                <p class="hero-sub">Yayasan Syech Subakir bergerak untuk yatim, dhuafa, dan pendidikan.</p>
+                <div class="btn-group">
+                    <button class="btn-donate" onclick="document.getElementById('donasi').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-gift"></i> Donasi Sekarang
+                    </button>
+                    <button class="btn-outline" onclick="document.getElementById('tentang').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                    </button>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <i class="fas fa-hand-holding-heart" style="font-size: 180px; color: var(--primary-light); opacity: 0.4;"></i>
+            </div>
+        </div>
+    </section>
+
+    <section id="tentang">
+        <div class="container">
+            <h2 class="section-title">Sejarah & Legalitas</h2>
+            <div class="glass-card">
+                <div class="timeline-item"><i class="fas fa-calendar-alt"></i> <strong>2015</strong> – Awal organisasi amal</div>
+                <div class="timeline-item"><i class="fas fa-file-signature"></i> <strong>2016</strong> – Akta Notaris NURUL FITRIA, SH., M.Kn No.173</div>
+                <div class="timeline-item"><i class="fas fa-building"></i> <strong>SK KEMENKUMHAM RI:</strong> AHU-0023582.AH.01.04 Tahun 2016</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2 class="section-title">Visi & Misi</h2>
+            <div class="visi-misi-grid">
+                <div class="card-visi"><i class="fas fa-eye fa-2x" style="color:var(--primary-dark);"></i><h3>Visi</h3><p>Mewujudkan lembaga sosial yang berperan aktif dalam kesejahteraan sosial bagi seluruh rakyat Indonesia.</p></div>
+                <div class="card-visi"><i class="fas fa-bullseye fa-2x" style="color:var(--primary-dark);"></i><h3>Misi</h3><ul style="list-style:none;"><li><i class="fas fa-check-circle" style="color:#6EDC8C;"></i> Menjembatani silaturahmi</li><li><i class="fas fa-check-circle" style="color:#6EDC8C;"></i> Meningkatkan kesejahteraan</li><li><i class="fas fa-check-circle" style="color:#6EDC8C;"></i> Mewujudkan generasi mandiri</li></ul></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="program">
+        <div class="container">
+            <h2 class="section-title">Program Unggulan</h2>
+            <div class="program-grid">
+                <div class="program-card"><i class="fas fa-child fa-3x" style="color:var(--primary-dark);"></i><h3>Santunan Yatim</h3><p>Target 25 Anak | Rp5jt</p><div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div></div>
+                <div class="program-card"><i class="fas fa-graduation-cap fa-3x" style="color:var(--primary-dark);"></i><h3>Pendidikan</h3><p>Target 20 Siswa | Rp5jt</p><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></div>
+                <div class="program-card"><i class="fas fa-hand-holding-heart fa-3x" style="color:var(--primary-dark);"></i><h3>Sosial</h3><p>Target 60 KK | Rp9jt</p><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="struktur">
+        <div class="container">
+            <h2 class="section-title">Struktur Pengurus</h2>
+            <div class="struktur-grid">
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>H.M. Hilal Asyari</h4><p>Pembina</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>H. Sumardi</h4><p>Pembina</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Marwan</h4><p>Pembina</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user-tie"></i></div><h4>Suyatno</h4><p>Ketua Umum</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Hudi Utomo</h4><p>Ketua</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Ali Said</h4><p>Sekretaris Umum</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Siti Nur Choiyimah</h4><p>Sekretaris</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Susi Wahyuni</h4><p>Bendahara Umum</p></div>
+                <div class="person-card"><div class="avatar-placeholder"><i class="fas fa-user"></i></div><h4>Suti'ah</h4><p>Bendahara</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="donasi">
+        <div class="container">
+            <h2 class="section-title">💚 Donasi Kebaikan</h2>
+            <div class="donation-wrapper">
+                <div class="payment-card">
+                    <h3><i class="fas fa-user-edit"></i> Data Donasi</h3>
+                    <p style="margin-bottom:20px; color:var(--text-soft);">Isi data untuk melanjutkan <span style="color:#e74c3c;">*</span></p>
+                    
+                    <div class="form-group">
+                        <label>Nama Lengkap <span style="color:#e74c3c;">*</span></label>
+                        <input type="text" id="donorName" placeholder="Contoh: Ahmad Fauzi">
+                        <div class="error-message" id="nameError">Nama harus diisi</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Program <span style="color:#e74c3c;">*</span></label>
+                        <select id="programSelect">
+                            <option value="">-- Pilih Program --</option>
+                            <option value="Santunan Yatim">Santunan Yatim</option>
+                            <option value="Bantuan Pendidikan">Bantuan Pendidikan</option>
+                            <option value="Bantuan Sosial">Bantuan Sosial</option>
+                        </select>
+                        <div class="error-message" id="programError">Program harus dipilih</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nominal Donasi <span style="color:#e74c3c;">*</span></label>
+                        <div class="amount-buttons">
+                            <span class="amount-btn" data-amount="10000">Rp10rb</span>
+                            <span class="amount-btn" data-amount="50000">Rp50rb</span>
+                            <span class="amount-btn active" data-amount="100000">Rp100rb</span>
+                            <span class="amount-btn" data-amount="250000">Rp250rb</span>
+                        </div>
+                        <input type="number" id="customAmount" placeholder="Atau nominal lain (min. Rp10.000)" style="margin-top:12px;" value="100000">
+                        <div class="error-message" id="amountError">Nominal minimal Rp10.000</div>
+                    </div>
+                    
+                    <button class="btn-donate" id="showPaymentBtn" style="width:100%; justify-content:center;">
+                        <i class="fas fa-arrow-right"></i> Lanjutkan ke Pembayaran
+                    </button>
+                </div>
+                
+                <div class="payment-card" id="paymentMethodsBox">
+                    <h3><i class="fas fa-credit-card"></i> Metode Pembayaran</h3>
+                    
+                    <div id="donorSummary" style="background:#E8F3EC; padding:12px 16px; border-radius:16px; margin-bottom:20px;"></div>
+                    
+                    <h4><i class="fas fa-mobile-alt"></i> E-Wallet</h4>
+                    <div class="rek-display"><span>DANA:  6285232806202</span> <button class="copy-btn" data-copy="6285212224876">Salin</button></div>
+                    <div class="rek-display"><span>GoPay: 6285232806202</span> <button class="copy-btn" data-copy="6285212224876">Salin</button></div>
+                    <div class="rek-display"><span>ShopeePay: 6285232806202</span> <button class="copy-btn" data-copy="6285212224876">Salin</button></div>
+                    
+                    <h4 style="margin-top:20px;"><i class="fas fa-university"></i> Bank BNI</h4>
+                    <div class="rek-display"><span>0684946935</span> <button class="copy-btn" data-copy="0684946935">Salin</button></div>
+                    <h3>konfirmasi Via Whatshapp jika selesai Pembayaran</h3>
+                       <p><strong>Yayasan Syech Subakir</strong></p>  
+                    
+                    <div class="qris-area">
+                        <i class="fas fa-qrcode fa-3x" style="color:var(--primary-dark);"></i>
+                        <p><strong>Scan QRIS</strong></p>
+                        <div class="qris-img">
+                            <img src="WhatsApp Image 2026-04-11 at 06.54.28.jpeg"  alt="QRIS"> 
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="btn-wa" id="waConfirmBtn" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Konfirmasi via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer id="kontak">
+    <div class="container footer-content">
+        <div><i class="fas fa-map-marker-alt"></i> Jl. Syech Subakir Dsn.Awar-Awar Ds.Tasikharjo-Jenu-Tuban</div>
+        <div><i class="fab fa-whatsapp"></i> +62 856-7222-979 </div>
+        <div>© 2026 Yayasan Syech Subakir</div>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    (function(){
+        document.getElementById('page-loader').classList.add('loader-hidden');
+        AOS.init({ duration: 800, once: true });
+        
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        mobileBtn?.addEventListener('click', () => {
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+        
+        // DARK MODE TOGGLE - UIVERSE.IO (Madflows) - DEFAULT WHITE
+        const darkToggle = document.getElementById('darkModeToggle');
+        // Default WHITE mode (checkbox tidak dicentang)
+        darkToggle.checked = false;
+        document.body.classList.remove('dark');
+        
+        darkToggle.addEventListener('change', function() {
+            if(this.checked) {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.remove('dark');
+            }
+        });
+        
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('customAmount').value = this.dataset.amount;
+            });
+        });
+        
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                navigator.clipboard?.writeText(this.dataset.copy).then(() => {
+                    const orig = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Tersalin';
+                    setTimeout(() => this.innerHTML = orig, 1500);
+                });
+            });
+        });
+        
+        const showBtn = document.getElementById('showPaymentBtn');
+        const paymentBox = document.getElementById('paymentMethodsBox');
+        const donorName = document.getElementById('donorName');
+        const programSelect = document.getElementById('programSelect');
+        const customAmount = document.getElementById('customAmount');
+        const donorSummary = document.getElementById('donorSummary');
+        const waBtn = document.getElementById('waConfirmBtn');
+        
+        const nameError = document.getElementById('nameError');
+        const programError = document.getElementById('programError');
+        const amountError = document.getElementById('amountError');
+        
+        function resetErrors() {
+            donorName.classList.remove('error');
+            programSelect.classList.remove('error');
+            customAmount.classList.remove('error');
+            nameError.style.display = 'none';
+            programError.style.display = 'none';
+            amountError.style.display = 'none';
+        }
+        
+        showBtn.addEventListener('click', function() {
+            resetErrors();
+            
+            const name = donorName.value.trim();
+            const program = programSelect.value;
+            const amount = parseInt(customAmount.value);
+            
+            let isValid = true;
+            
+            if (!name) {
+                donorName.classList.add('error');
+                nameError.style.display = 'block';
+                isValid = false;
+            }
+            if (!program) {
+                programSelect.classList.add('error');
+                programError.style.display = 'block';
+                isValid = false;
+            }
+            if (!amount || amount < 10000) {
+                customAmount.classList.add('error');
+                amountError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                alert('Mohon lengkapi data donasi dengan benar.');
+                return;
+            }
+            
+            donorSummary.innerHTML = `
+                <strong><i class="fas fa-user-check"></i> Ringkasan Donasi:</strong><br>
+                Nama: ${name}<br>
+                Program: ${program}<br>
+                Nominal: Rp ${amount.toLocaleString('id-ID')}
+            `;
+            
+            const waNumber = '628567222979';
+            const message = `Assalamu'alaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20untuk%20Yayasan%20Syech%20Subakir.%0A%0ANama%20%3A%20${encodeURIComponent(name)}%0AProgram%20%3A%20${encodeURIComponent(program)}%0ANominal%20%3A%20Rp%20${amount.toLocaleString('id-ID')}%0A%0ATerima%20kasih.`;
+            waBtn.href = `https://wa.me/${waNumber}?text=${message}`;
+            
+            paymentBox.style.display = 'block';
+            paymentBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    })();
+</script>
+</body>
+</html>
